@@ -1,0 +1,105 @@
+# Site
+name: "ClientLog"
+title: "ClientLog"
+description: "Repositorio interno de clientes, actividades, incidencias y oportunidades"
+logo: 'assets/images/logo.png'
+favicon: 'assets/images/logo.png'
+baseurl: ""
+email: soporte@empresa.com
+
+# Collections - Estructura principal del sistema
+collections:
+  clientes:
+    output: true
+    permalink: /clientes/:path/
+    sort_by: nombre
+  incidencias:
+    output: true
+    permalink: /incidencias/:path/
+    sort_by: date
+  
+# Defaults para Collections
+defaults:
+  # Clientes
+  - scope:
+      path: ""
+      type: "clientes"
+    values:
+      layout: "cliente"
+      toc: true
+  # Incidencias
+  - scope:
+      path: ""
+      type: "incidencias"
+    values:
+      layout: "incidencia"
+      toc: true
+      estado: "abierto"
+  # Posts (mantener para blog/novedades si es necesario)
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      
+# Agentes IA - Metadata para procesamiento
+ai_metadata:
+  version: "1.0"
+  structured_format: true
+  indexable: true
+
+# Autores/Técnicos del equipo
+authors:
+  admin:
+    name: Administrador
+    display_name: Admin
+    avatar: 'assets/images/avatar-admin.png'
+    email: admin@empresa.com
+    role: "Administrador de Sistema"
+  tecnico1:
+    name: Técnico 1
+    display_name: Técnico Senior
+    avatar: 'assets/images/avatar-tec1.png'
+    email: tecnico1@empresa.com
+    role: "Soporte Técnico Senior"
+
+# Plugins
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
+    
+# Pagination 
+paginate: 20
+paginate_path: /page:num/
+    
+# Other
+highlighter: rouge
+markdown: kramdown
+kramdown:
+   auto_ids: true
+   toc_levels: 1..3
+   syntax_highlighter: rouge
+   syntax_highlighter_opts:
+      css_class: 'highlight'
+
+# Búsqueda y filtrado
+search: true
+timezone: Europe/Madrid
+
+# Adsense (desactivado para uso interno)
+adsense: "disabled"
+
+# Lazy Images
+lazyimages: "disabled"
+
+# Post Author Box
+authorbox: "enabled"
+
+# Sass
+sass:
+  sass_dir: _sass
+  style: compressed
+
+exclude: [changelog.md, LICENSE.txt, README.md, Gemfile, Gemfile.lock, _templates]

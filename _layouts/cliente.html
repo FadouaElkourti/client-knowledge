@@ -1,0 +1,130 @@
+---
+layout: default
+---
+<!-- Layout para páginas de cliente -->
+<div class="container">
+    <div class="row">
+        <!-- Sidebar de navegación del cliente -->
+        <div class="col-md-3">
+            <div class="sticky-top">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">{{ page.nombre_cliente | default: page.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if page.logo_cliente %}
+                        <img src="{{ page.logo_cliente }}" alt="{{ page.nombre_cliente }}" class="img-fluid mb-3">
+                        {% endif %}
+                        
+                        <h6 class="text-muted">Información</h6>
+                        <ul class="list-unstyled small">
+                            {% if page.sector %}
+                            <li><strong>Sector:</strong> {{ page.sector }}</li>
+                            {% endif %}
+                            {% if page.contacto %}
+                            <li><strong>Contacto:</strong> {{ page.contacto }}</li>
+                            {% endif %}
+                            {% if page.fecha_inicio %}
+                            <li><strong>Cliente desde:</strong> {{ page.fecha_inicio }}</li>
+                            {% endif %}
+                        </ul>
+                        
+                        <hr>
+                        
+                        <h6 class="text-muted">Navegación</h6>
+                        <nav class="nav flex-column">
+                            <a class="nav-link" href="{{ page.url }}">📄 Resumen</a>
+                            <a class="nav-link" href="{{ page.url }}infraestructura/">🖥️ Infraestructura</a>
+                            <a class="nav-link" href="{{ page.url }}arquitectura/">🏗️ Arquitectura</a>
+                            <a class="nav-link" href="{{ page.url }}historial/">📅 Historial</a>
+                            <a class="nav-link" href="#incidencias">🔧 Incidencias</a>
+                            <a class="nav-link" href="{{ page.url }}notas-ia/">🤖 Notas IA</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="col-md-9">
+            <!-- Metadata AI-readable -->
+            <div class="ai-metadata d-none" data-entity="cliente" data-id="{{ page.slug }}">
+                {
+                    "tipo": "cliente",
+                    "nombre": "{{ page.nombre_cliente }}",
+                    "sector": "{{ page.sector }}",
+                    "fecha_actualizacion": "{{ page.date | date: '%Y-%m-%d' }}",
+                    "tecnologias": {{ page.tecnologias | jsonify }},
+                    "criticidad": "{{ page.criticidad | default: 'media' }}"
+                }
+            </div>
+            
+            <article class="article-post">
+                <h1 class="article-post-title">{{ page.title }}</h1>
+                
+                {% if page.descripcion %}
+                <p class="lead">{{ page.descripcion }}</p>
+                {% endif %}
+                
+                {% if page.etiquetas %}
+                <div class="mb-3">
+                    {% for tag in page.etiquetas %}
+                    <span class="badge badge-primary">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if page.toc %}
+                <div class="toc mb-4">
+                    <h4>Índice</h4>
+                    {% include toc.html html=content %}
+                </div>
+                {% endif %}
+                
+                <div class="article-post-content">
+                    {{ content }}
+                </div>
+                
+                <!-- Incidencias relacionadas -->
+                <div id="incidencias" class="mt-5">
+                    <h3>Incidencias Recientes</h3>
+                    <div class="row">
+                        {% assign cliente_incidencias = site.incidencias | where: "cliente", page.slug | sort: "date" | reverse %}
+                        {% if cliente_incidencias.size > 0 %}
+                            {% for incidencia in cliente_incidencias limit:5 %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="{{ incidencia.url }}">{{ incidencia.title }}</a>
+                                        </h5>
+                                        <p class="card-text small">
+                                            <span class="badge badge-{{ incidencia.estado | default: 'warning' }}">
+                                                {{ incidencia.estado | default: 'abierto' }}
+                                            </span>
+                                            <span class="text-muted">{{ incidencia.date | date: "%d/%m/%Y" }}</span>
+                                        </p>
+                                        <p class="card-text">{{ incidencia.descripcion_breve | truncate: 100 }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No hay incidencias registradas para este cliente.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Metadata de última actualización -->
+                <footer class="mt-5 pt-3 border-top">
+                    <small class="text-muted">
+                        Última actualización: {{ page.date | date: "%d/%m/%Y %H:%M" }}
+                        {% if page.author %}
+                        por {{ site.authors[page.author].display_name }}
+                        {% endif %}
+                    </small>
+                </footer>
+            </article>
+        </div>
+    </div>
+</div>

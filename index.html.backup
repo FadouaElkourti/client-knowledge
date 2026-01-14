@@ -1,0 +1,255 @@
+---
+layout: default
+title: "TechDocs - Sistema de Documentación Técnica"
+---
+
+<!-- Hero Section Moderno -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-8">
+                <h1 class="hero-title mb-3">💡 Bienvenido al Knowledge Hub</h1>
+                <p class="hero-subtitle mb-4">
+                    Tu centro de conocimiento técnico. Documenta, colabora y comparte soluciones con tu equipo.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn-modern btn-modern-primary mr-3" href="/clientes/">
+                        <i class="icon">👥</i> Explorar Clientes
+                    </a>
+                    <a class="btn-modern btn-modern-outline" href="/incidencias/">
+                        <i class="icon">📝</i> Ver Incidencias
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="stats-circle">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ site.clientes.size }}</div>
+                        <div class="stat-label">Clientes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ site.incidencias.size }}</div>
+                        <div class="stat-label">Casos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Cards Modernos -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="status-card status-success">
+                <div class="status-icon">✅</div>
+                <div class="status-value">{{ site.incidencias | where: "estado", "resuelto" | size }}</div>
+                <div class="status-label">Resueltos</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="status-card status-warning">
+                <div class="status-icon">⚡</div>
+                <div class="status-value">{{ site.incidencias | where: "estado", "en-progreso" | size }}</div>
+                <div class="status-label">En Progreso</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="status-card status-danger">
+                <div class="status-icon">🔴</div>
+                <div class="status-value">{{ site.incidencias | where: "estado", "abierto" | size }}</div>
+                <div class="status-label">Abiertos</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="status-card status-info">
+                <div class="status-icon">⭐</div>
+                <div class="status-value">{{ site.clientes.size }}</div>
+                <div class="status-label">Clientes</div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <!-- Feed de Actividad Reciente -->
+    <div class="container">
+        <div class="row">
+            <!-- Timeline de Incidencias -->
+            <div class="col-lg-8">
+                <div class="section-header mb-4">
+                    <h2 class="section-title">📌 Actividad Reciente</h2>
+                    <p class="section-subtitle">Últimas incidencias y actualizaciones</p>
+                </div>
+                
+                {% assign incidencias_recientes = site.incidencias | sort: "date" | reverse | limit: 5 %}
+                {% if incidencias_recientes.size > 0 %}
+                <div class="feed-timeline">
+                    {% for incidencia in incidencias_recientes %}
+                    <article class="feed-card">
+                        <div class="feed-card-header">
+                            <div class="feed-avatar">
+                                <span class="avatar-icon">
+                                    {% if incidencia.estado == 'resuelto' %}✅{% elsif incidencia.estado == 'en-progreso' %}⚙️{% else %}🔴{% endif %}
+                                </span>
+                            </div>
+                            <div class="feed-meta">
+                                <h3 class="feed-title">
+                                    <a href="{{ incidencia.url }}">{{ incidencia.title }}</a>
+                                </h3>
+                                <div class="feed-info">
+                                    <span class="feed-date">{{ incidencia.date | date: "%d %b %Y" }}</span>
+                                    {% if incidencia.cliente %}
+                                    <span class="feed-separator">•</span>
+                                    <span class="feed-client">{{ incidencia.cliente }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if incidencia.descripcion_breve %}
+                        <div class="feed-card-body">
+                            <p class="feed-description">{{ incidencia.descripcion_breve | truncate: 150 }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="feed-card-footer">
+                            <div class="feed-tags">
+                                <span class="tag tag-{{ incidencia.estado }}">
+                                    {{ incidencia.estado | replace: "-", " " | capitalize }}
+                                </span>
+                                {% if incidencia.prioridad %}
+                                <span class="tag tag-priority">{{ incidencia.prioridad }}</span>
+                                {% endif %}
+                                {% if incidencia.tecnologias %}
+                                {% for tech in incidencia.tecnologias limit: 2 %}
+                                <span class="tag tag-tech">{{ tech }}</span>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                            <a href="{{ incidencia.url }}" class="feed-link">Ver detalles →</a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="/incidencias/" class="btn-modern btn-modern-outline">
+                        Ver todo el historial
+                    </a>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <h3>No hay incidencias todavía</h3>
+                    <p>Empieza a documentar tus primeros casos técnicos</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar de Clientes -->
+            <div class="col-lg-4">
+                <div class="sidebar-widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">🏢 Clientes Activos</h3>
+                    </div>
+                    
+                    {% if site.clientes.size > 0 %}
+                    <div class="clients-list">
+                        {% for cliente in site.clientes limit: 5 %}
+                        <a href="{{ cliente.url }}" class="client-card">
+                            <div class="client-avatar">
+                                {{ cliente.nombre_cliente | slice: 0 }}
+                            </div>
+                            <div class="client-info">
+                                <h4 class="client-name">{{ cliente.nombre_cliente }}</h4>
+                                {% if cliente.sector %}
+                                <p class="client-sector">{{ cliente.sector }}</p>
+                                {% endif %}
+                            </div>
+                            {% if cliente.criticidad %}
+                            <div class="client-badge badge-{{ cliente.criticidad }}">
+                                {{ cliente.criticidad }}
+                            </div>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+    <div class="features-section mt-5 py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">🚀 Empieza a Documentar</h2>
+                <p class="section-subtitle">Herramientas para gestionar tu conocimiento técnico</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">Gestión de Clientes</h3>
+                        <p class="feature-desc">Organiza información de tus clientes, infraestructura y SLAs</p>
+                        <div class="feature-code">
+                            <code>_templates/cliente-base.md</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3 class="feature-title">Resolución de Incidencias</h3>
+                        <p class="feature-desc">Documenta problemas, soluciones y aprendizajes clave</p>
+                        <div class="feature-code">
+                            <code>_templates/nueva-incidencia.md</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">AI-Friendly</h3>
+                        <p class="feature-desc">Metadatos estructurados para búsquedas inteligentes</p>
+                        <div class="feature-code">
+                            <code>JSON-LD Schema</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+                    </div>
+                    
+                    <div class="widget-footer">
+                        <a href="/clientes/" class="widget-link">Ver todos →</a>
+                    </div>
+                    {% else %}
+                    <div class="empty-state-small">
+                        <p>No hay clientes registrados</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="sidebar-widget mt-4">
+                    <div class="widget-header">
+                        <h3 class="widget-title">⚡ Acciones Rápidas</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="/clientes/" class="quick-action-btn">
+                            <span class="qa-icon">➕</span>
+                            <span class="qa-text">Nuevo Cliente</span>
+                        </a>
+                        <a href="/incidencias/" class="quick-action-btn">
+                            <span class="qa-icon">📝</span>
+                            <span class="qa-text">Nueva Incidencia</span>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <span class="qa-icon">📊</span>
+                            <span class="qa-text">Ver Estadísticas</span>
+                        </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,177 @@
+---
+layout: default
+---
+<!-- Layout para incidencias técnicas -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- Metadata AI-readable estructurada -->
+            <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "TechArticle",
+                "headline": "{{ page.title }}",
+                "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
+                "dateModified": "{{ page.last_modified_at | default: page.date | date: '%Y-%m-%d' }}",
+                "description": "{{ page.descripcion_breve | default: page.title }}",
+                "keywords": "{{ page.tecnologias | join: ', ' }}",
+                "articleBody": {
+                    "problema": "{{ page.problema }}",
+                    "causa": "{{ page.causa_raiz }}",
+                    "solucion": "{{ page.solucion }}",
+                    "estado": "{{ page.estado }}",
+                    "prioridad": "{{ page.prioridad }}",
+                    "cliente": "{{ page.cliente }}"
+                }
+            }
+            </script>
+            
+            <article class="article-post">
+                <!-- Header con metadata visual -->
+                <div class="border-bottom pb-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="article-post-title">{{ page.title }}</h1>
+                            {% if page.cliente %}
+                            <p class="text-muted mb-2">
+                                Cliente: 
+                                {% assign cliente_obj = site.clientes | where: "slug", page.cliente | first %}
+                                {% if cliente_obj %}
+                                <a href="{{ cliente_obj.url }}">{{ cliente_obj.nombre_cliente }}</a>
+                                {% else %}
+                                {{ page.cliente }}
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            {% if page.estado %}
+                            <span class="badge badge-pill badge-{% if page.estado == 'resuelto' %}success{% elsif page.estado == 'en-progreso' %}warning{% else %}danger{% endif %} badge-lg">
+                                {{ page.estado | upcase }}
+                            </span>
+                            {% endif %}
+                            {% if page.prioridad %}
+                            <br><small class="text-muted">Prioridad: {{ page.prioridad }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Etiquetas tecnológicas -->
+                    {% if page.tecnologias %}
+                    <div class="mt-2">
+                        {% for tech in page.tecnologias %}
+                        <span class="badge badge-secondary">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Resumen ejecutivo para IA -->
+                {% if page.descripcion_breve %}
+                <div class="alert alert-info" role="alert">
+                    <strong>Resumen:</strong> {{ page.descripcion_breve }}
+                </div>
+                {% endif %}
+                
+                <!-- Índice de contenido -->
+                {% if page.toc %}
+                <div class="toc mb-4 p-3 bg-light rounded">
+                    <h5>Índice</h5>
+                    {% include toc.html html=content %}
+                </div>
+                {% endif %}
+                
+                <!-- Contenido estructurado -->
+                <div class="article-post-content">
+                    {{ content }}
+                </div>
+                
+                <!-- Secciones estructuradas adicionales -->
+                {% if page.impacto %}
+                <section class="mt-4 p-3 border-left border-danger">
+                    <h4>⚠️ Impacto</h4>
+                    <p>{{ page.impacto }}</p>
+                </section>
+                {% endif %}
+                
+                {% if page.tiempo_resolucion %}
+                <section class="mt-4">
+                    <h4>⏱️ Tiempo de Resolución</h4>
+                    <p><strong>{{ page.tiempo_resolucion }}</strong></p>
+                </section>
+                {% endif %}
+                
+                {% if page.lecciones_aprendidas %}
+                <section class="mt-4 p-3 bg-light rounded">
+                    <h4>📚 Lecciones Aprendidas</h4>
+                    {{ page.lecciones_aprendidas | markdownify }}
+                </section>
+                {% endif %}
+                
+                {% if page.notas_ia %}
+                <section class="mt-4 p-3 border border-primary rounded">
+                    <h4>🤖 Notas para Agente IA</h4>
+                    <div class="font-monospace small">
+                        {{ page.notas_ia | markdownify }}
+                    </div>
+                </section>
+                {% endif %}
+                
+                <!-- Incidencias relacionadas -->
+                {% if page.relacionadas %}
+                <section class="mt-4">
+                    <h4>🔗 Incidencias Relacionadas</h4>
+                    <ul>
+                        {% for rel_slug in page.relacionadas %}
+                        {% assign rel_inc = site.incidencias | where: "slug", rel_slug | first %}
+                        {% if rel_inc %}
+                        <li><a href="{{ rel_inc.url }}">{{ rel_inc.title }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endif %}
+                
+                <!-- Footer con metadata -->
+                <footer class="mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <strong>Creado:</strong> {{ page.date | date: "%d/%m/%Y %H:%M" }}<br>
+                                {% if page.last_modified_at %}
+                                <strong>Actualizado:</strong> {{ page.last_modified_at | date: "%d/%m/%Y %H:%M" }}<br>
+                                {% endif %}
+                                {% if page.author %}
+                                <strong>Responsable:</strong> {{ site.authors[page.author].display_name }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            {% if page.referencias %}
+                            <small>
+                                <strong>Referencias:</strong><br>
+                                {% for ref in page.referencias %}
+                                <a href="{{ ref.url }}" target="_blank">{{ ref.titulo }}</a><br>
+                                {% endfor %}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </footer>
+            </article>
+            
+            <!-- Navegación entre incidencias -->
+            <nav class="mt-4">
+                <ul class="pager">
+                    {% if page.previous.url and page.previous.layout == 'incidencia' %}
+                    <li class="previous"><a href="{{ page.previous.url }}">← {{ page.previous.title | truncate: 50 }}</a></li>
+                    {% endif %}
+                    {% if page.next.url and page.next.layout == 'incidencia' %}
+                    <li class="next"><a href="{{ page.next.url }}">{{ page.next.title | truncate: 50 }} →</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
