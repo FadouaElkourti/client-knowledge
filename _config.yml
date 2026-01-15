@@ -8,34 +8,8 @@ baseurl: "/client-knowledge"
 url: "https://fadouaelkourti.github.io"
 email: soporte@empresa.com
 
-# Collections - Estructura principal del sistema
-collections:
-  clientes:
-    output: true
-    permalink: /clientes/:path/
-    sort_by: nombre
-  incidencias:
-    output: true
-    permalink: /incidencias/:path/
-    sort_by: date
-  
-# Defaults para Collections
+# Defaults para páginas
 defaults:
-  # Clientes
-  - scope:
-      path: ""
-      type: "clientes"
-    values:
-      layout: "cliente"
-      toc: true
-  # Incidencias
-  - scope:
-      path: ""
-      type: "incidencias"
-    values:
-      layout: "incidencia"
-      toc: true
-      estado: "abierto"
   # Posts (mantener para blog/novedades si es necesario)
   - scope:
       path: ""
