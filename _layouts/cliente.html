@@ -85,35 +85,15 @@ layout: default
                     {{ content }}
                 </div>
                 
-                <!-- Incidencias relacionadas -->
+                <!-- Incidencias relacionadas - temporalmente deshabilitado -->
+                <!--
                 <div id="incidencias" class="mt-5">
                     <h3>Incidencias Recientes</h3>
                     <div class="row">
-                        {% assign cliente_incidencias = site.incidencias | where: "cliente", page.slug | sort: "date" | reverse %}
-                        {% if cliente_incidencias.size > 0 %}
-                            {% for incidencia in cliente_incidencias limit:5 %}
-                            <div class="col-md-6 mb-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            <a href="{{ incidencia.url }}">{{ incidencia.title }}</a>
-                                        </h5>
-                                        <p class="card-text small">
-                                            <span class="badge badge-{{ incidencia.estado | default: 'warning' }}">
-                                                {{ incidencia.estado | default: 'abierto' }}
-                                            </span>
-                                            <span class="text-muted">{{ incidencia.date | date: "%d/%m/%Y" }}</span>
-                                        </p>
-                                        <p class="card-text">{{ incidencia.descripcion_breve | truncate: 100 }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted">No hay incidencias registradas para este cliente.</p>
-                        {% endif %}
+                        <p class="text-muted">Las incidencias se mostrarán aquí cuando se cree contenido.</p>
                     </div>
                 </div>
+                -->
                 
                 <!-- Metadata de última actualización -->
                 <footer class="mt-5 pt-3 border-top">
