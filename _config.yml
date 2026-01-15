@@ -4,7 +4,8 @@ title: "ClientLog"
 description: "Repositorio interno de clientes, actividades, incidencias y oportunidades"
 logo: 'assets/images/logo.png'
 favicon: 'assets/images/logo.png'
-baseurl: ""
+baseurl: "/client-knowledge"
+url: "https://fadouaelkourti.github.io"
 email: soporte@empresa.com
 
 # Collections - Estructura principal del sistema
